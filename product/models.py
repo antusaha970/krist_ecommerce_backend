@@ -1,6 +1,8 @@
 from django.db import models
 from django.utils.text import slugify
 from django.contrib.auth import get_user_model
+from django.dispatch import receiver
+from django.db.models.signals import post_delete
 
 # Create your models here.
 
@@ -81,3 +83,10 @@ class ProductReviews(models.Model):
     product = models.ForeignKey(
         Product, on_delete=models.CASCADE, related_name="product_reviews")
     reviews = models.ForeignKey(Review, on_delete=models.CASCADE)
+
+
+@receiver(post_delete, sender=ProductImage)
+def auto_delete_image_after_product_delete(sender, instance, **kwargs):
+    """This method deletes product images automatically after"""
+    if instance.images:
+        instance.images.delete(save=False)

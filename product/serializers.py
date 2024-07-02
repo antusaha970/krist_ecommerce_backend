@@ -44,6 +44,7 @@ class ProductImageToDisplay(serializers.Serializer):
 
 class ProductSerializer(serializers.ModelSerializer):
     product_images = ProductImageToDisplay(many=True, read_only=True)
+
     categories = serializers.SlugRelatedField(
         queryset=models.Category.objects.all(), slug_field='name', many=True)
     colors = serializers.SlugRelatedField(
@@ -69,7 +70,6 @@ class ProductSerializer(serializers.ModelSerializer):
         categories_data = validated_data.pop('categories')
         colors_data = validated_data.pop('colors')
         sizes_data = validated_data.pop('sizes')
-        print(categories_data)
 
         product = models.Product.objects.create(**validated_data)
 

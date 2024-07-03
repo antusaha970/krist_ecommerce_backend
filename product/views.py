@@ -6,9 +6,8 @@ from .filters import ProductFilter
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.decorators import action
 from rest_framework.response import Response
-from django.shortcuts import get_object_or_404
+from django.shortcuts import get_object_or_404, get_list_or_404
 from rest_framework import status
-# Create your views here.
 
 
 class ProductPagination(PageNumberPagination):
@@ -64,3 +63,27 @@ class ProductViewSet(viewsets.ModelViewSet):
         categories = models.Color.objects.all()
         serializer = serializers.ColorSerializer(categories, many=True)
         return Response(serializer.data)
+
+    @action(detail=True, methods=["GET", "POST"])
+    def product_review(self, request, pk=None):
+        if request.method == "GET":
+            reviews = get_list_or_404(models.ProductReviews, product__id=pk)
+            serializer = serializers.ProductReviewsSerializer(
+                reviews, many=True)
+            return Response(serializer.data)
+
+        if request.method == "POST":
+            product = get_object_or_404(models.Product, pk=pk)
+            data = request.data
+
+            review_serializer = serializers.ReviewSerializer(
+                data=data, many=False)
+            if review_serializer.is_valid():
+                review = models.Review.objects.create(**data)
+                pd_review = {'product': product, 'reviews': review}
+                product_review = models.ProductReviews.objects.create(
+                    **pd_review)
+                product_review.save()
+
+                return Response(review_serializer.data)
+            return Response(review_serializer.errors, status=status.HTTP_400_BAD_REQUEST)

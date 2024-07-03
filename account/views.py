@@ -6,6 +6,11 @@ from rest_framework import status
 from rest_framework_simplejwt.tokens import RefreshToken
 from django.contrib.auth import authenticate
 from rest_framework.permissions import IsAuthenticated, AllowAny
+from rest_framework.decorators import api_view
+from django.shortcuts import get_object_or_404
+from random import randint
+from datetime import datetime, timedelta
+from django.core.mail import send_mail
 
 
 class AccountRegistrationView(APIView):
@@ -80,3 +85,28 @@ class AccountLoginView(APIView):
             return Response(response_data, status=status.HTTP_200_OK)
 
         return Response({"errors": "No users found with the given credentials"}, status=status.HTTP_404_NOT_FOUND)
+
+
+@api_view(["POST"])
+def send_forgot_password(request):
+    """This function send the OTP to user mail for forgot password"""
+    data = request.data
+    email = data.get('email')
+    if email is None:
+        return Response({"errors": "Email is required"}, status=status.HTTP_400_BAD_REQUEST)
+
+    account = get_object_or_404(Account, email=email)
+
+    OTP = randint(100000, 999999)
+    expire_time = datetime.now()+timedelta(minutes=30)
+
+    account.ResetPassword.reset_password_otp = OTP
+    account.ResetPassword.reset_password_expire = expire_time
+
+    account.ResetPassword.save()
+
+    message = f"Your password reset OTP is {OTP}."
+    send_mail("Password Reset OTP for Krist e-commerce",
+              message, "noreply@gmail.com", [email])
+
+    return Response({"details": "password reset OTP has been sent successfully"})

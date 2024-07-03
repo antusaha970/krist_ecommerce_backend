@@ -4,7 +4,7 @@ from . import serializers
 from . import models
 from .filters import ProductFilter
 from rest_framework.pagination import PageNumberPagination
-from rest_framework.decorators import action
+from rest_framework.decorators import action, api_view
 from rest_framework.response import Response
 from django.shortcuts import get_object_or_404, get_list_or_404
 from rest_framework import status
@@ -87,3 +87,10 @@ class ProductViewSet(viewsets.ModelViewSet):
 
                 return Response(review_serializer.data)
             return Response(review_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+@api_view(["GET"])
+def top_reviews(request):
+    reviews = models.Review.objects.all()[0:10]
+    serializer = serializers.ReviewSerializer(reviews, many=True)
+    return Response(serializer.data)

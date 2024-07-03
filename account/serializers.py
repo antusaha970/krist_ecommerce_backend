@@ -2,6 +2,20 @@ from rest_framework import serializers
 from .models import Account
 
 
+class AccountUpdateSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Account
+        fields = ['first_name', 'last_name',
+                  'phone_number', 'address']
+        extra_kwargs = {
+            "first_name": {"required": True},
+            "last_name": {"required": True},
+            "phone_number": {"required": True},
+            "address": {"required": True},
+        }
+
+
 class AccountSerializer(serializers.ModelSerializer):
     password = serializers.CharField(max_length=30, write_only=True)
 

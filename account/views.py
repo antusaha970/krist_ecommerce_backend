@@ -1,13 +1,14 @@
 from rest_framework.views import APIView
-from .serializers import AccountSerializer
+from .serializers import AccountSerializer, AccountUpdateSerializer
 from .models import Account
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework_simplejwt.tokens import RefreshToken
 from django.contrib.auth import authenticate
+from rest_framework.permissions import IsAuthenticated, AllowAny, IsAdminUser
 
 
-class AccountView(APIView):
+class AccountRegistrationView(APIView):
     def post(self, request, *args, **kwargs):
         """This method do registration for an account with valid information"""
         data = request.data
@@ -22,6 +23,38 @@ class AccountView(APIView):
             }
             return Response(response_data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class AccountUpdateView(APIView):
+    def get_permissions(self):
+        if self.request.method == 'PUT' or self.request.method == 'PATCH' or self.request.method == 'DELETE':
+            return [IsAuthenticated()]
+        return [AllowAny()]
+
+    def put(self, request, *args, **kwargs):
+        user = request.user
+        data = request.data
+        serializer = AccountUpdateSerializer(
+            instance=user, data=data, many=False)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def patch(self, request, *args, **kwargs):
+        user = request.user
+        data = request.data
+        serializer = AccountUpdateSerializer(
+            instance=user, data=data, many=False, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def delete(self, request, *args, **kwargs):
+        user = request.user
+        user.delete()
+        return Response({'details': "Account deleted"}, status=status.HTTP_204_NO_CONTENT)
 
 
 class AccountLoginView(APIView):

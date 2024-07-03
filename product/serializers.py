@@ -27,9 +27,11 @@ class SizeSerializer(serializers.ModelSerializer):
 
 
 class ProductReviewsSerializer(serializers.ModelSerializer):
+    reviews = ReviewSerializer(many=False)
+
     class Meta:
         model = models.ProductReviews
-        fields = "__all__"
+        fields = ['reviews']
 
 
 class ProductImageSerializer(serializers.ModelSerializer):

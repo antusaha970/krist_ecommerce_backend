@@ -1,6 +1,8 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 from .manager import UserManager
+from django.dispatch import receiver
+from django.db.models.signals import post_save
 
 
 class Account(AbstractUser):
@@ -18,3 +20,21 @@ class Account(AbstractUser):
 
     def __str__(self) -> str:
         return self.email
+
+
+class AccountPasswordResetProfile(models.Model):
+    account = models.OneToOneField(
+        Account, on_delete=models.CASCADE, related_name="ResetPassword")
+    reset_password_otp = models.IntegerField(
+        null=True, blank=True, default=None)
+    reset_password_expire = models.DateTimeField(
+        null=True, blank=True, default=None)
+
+
+@receiver(post_save, sender=Account)
+def make_profile_for_password_reset(sender, instance, created, **kwargs):
+    """This signal automatically create a new profile after a account do registration"""
+    account = instance
+    if created:
+        profile = AccountPasswordResetProfile(account=account)
+        profile.save()

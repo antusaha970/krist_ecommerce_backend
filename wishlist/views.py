@@ -1,4 +1,3 @@
-from django.shortcuts import render
 from rest_framework.views import APIView
 from .models import WishList
 from .serializers import WishListSerializer, WishListForDisplaySerializer

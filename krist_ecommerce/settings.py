@@ -37,7 +37,8 @@ INSTALLED_APPS = [
     # custom
     'product',
     'account',
-    'wishlist'
+    'wishlist',
+    'cart',
 ]
 
 

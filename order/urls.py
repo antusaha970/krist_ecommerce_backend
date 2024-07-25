@@ -9,4 +9,5 @@ router.register("delivery_address", views.DeliveryAddressViewSet,
 
 urlpatterns = [
     path('', include(router.urls)),
+    path("orders/", views.OrderView.as_view())
 ]

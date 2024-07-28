@@ -1,5 +1,6 @@
 from rest_framework import serializers
 from . import models
+from django.contrib.auth import get_user_model
 
 
 class CategorySerializer(serializers.ModelSerializer):
@@ -8,7 +9,22 @@ class CategorySerializer(serializers.ModelSerializer):
         fields = ['name']
 
 
+class ReviewerSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = get_user_model()
+        fields = ['first_name', 'last_name', 'email']
+
+
 class ReviewSerializer(serializers.ModelSerializer):
+    reviewer = ReviewerSerializer()
+
+    class Meta:
+        model = models.Review
+        fields = "__all__"
+
+
+class ReviewValidatorSerializer(serializers.ModelSerializer):
+
     class Meta:
         model = models.Review
         fields = "__all__"

@@ -80,24 +80,27 @@ class ProductViewSet(viewsets.ModelViewSet):
         if request.method == "POST":
             product = get_object_or_404(models.Product, pk=pk)
             data = request.data
-            user = request.user
+            account = request.user
+            print("account ", account)
             review_data = {
                 'name': data.get('name'),
                 'email': data.get('email'),
                 'body': data.get('body'),
-                'reviewer': user.id
+                'reviewer': account.id
             }
 
-            review_serializer = serializers.ReviewSerializer(
+            review_serializer = serializers.ReviewValidatorSerializer(
                 data=review_data, many=False)
             if review_serializer.is_valid():
-                review = models.Review.objects.create(**data)
+                review_data['reviewer'] = account
+                review = models.Review.objects.create(**review_data)
                 pd_review = {'product': product, 'reviews': review}
+
                 product_review = models.ProductReviews.objects.create(
                     **pd_review)
                 product_review.save()
 
-                return Response(review_serializer.data)
+                return Response(status=status.HTTP_201_CREATED)
             return Response(review_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 

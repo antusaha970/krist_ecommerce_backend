@@ -57,7 +57,17 @@ class ProductImageSerializer(serializers.ModelSerializer):
 
 
 class ProductImageToDisplay(serializers.Serializer):
-    images = serializers.ImageField()
+    images = serializers.SerializerMethodField()
+
+    def get_images(self, obj):
+        request = self.context.get('request')
+        if request is not None:
+            return request.build_absolute_uri(obj.images.url)
+        return obj.images.url  # fallback if request context is missing
+
+    class Meta:
+        model = models.ProductImage
+        fields = ['images']
 
 
 class ProductSerializer(serializers.ModelSerializer):

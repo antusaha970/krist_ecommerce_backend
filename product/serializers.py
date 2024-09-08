@@ -1,5 +1,6 @@
 from rest_framework import serializers
 from . import models
+from django.contrib.auth import get_user_model
 
 
 class CategorySerializer(serializers.ModelSerializer):
@@ -8,7 +9,22 @@ class CategorySerializer(serializers.ModelSerializer):
         fields = ['name']
 
 
+class ReviewerSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = get_user_model()
+        fields = ['first_name', 'last_name', 'email']
+
+
 class ReviewSerializer(serializers.ModelSerializer):
+    reviewer = ReviewerSerializer()
+
+    class Meta:
+        model = models.Review
+        fields = "__all__"
+
+
+class ReviewValidatorSerializer(serializers.ModelSerializer):
+
     class Meta:
         model = models.Review
         fields = "__all__"
@@ -41,7 +57,17 @@ class ProductImageSerializer(serializers.ModelSerializer):
 
 
 class ProductImageToDisplay(serializers.Serializer):
-    images = serializers.ImageField()
+    images = serializers.SerializerMethodField()
+
+    def get_images(self, obj):
+        request = self.context.get('request')
+        if request is not None:
+            return request.build_absolute_uri(obj.images.url)
+        return obj.images.url  # fallback if request context is missing
+
+    class Meta:
+        model = models.ProductImage
+        fields = ['images']
 
 
 class ProductSerializer(serializers.ModelSerializer):

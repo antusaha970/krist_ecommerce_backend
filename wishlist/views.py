@@ -15,7 +15,8 @@ class WishListView(APIView):
         """Get all wishlist items for logged in users"""
         user = request.user
         all_wishlist_data = WishList.objects.filter(account=user)
-        serializer = WishListForDisplaySerializer(all_wishlist_data, many=True)
+        serializer = WishListForDisplaySerializer(
+            all_wishlist_data, many=True, context={'request': request})
         return Response(serializer.data)
 
     def post(self, request):

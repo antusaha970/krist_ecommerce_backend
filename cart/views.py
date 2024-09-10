@@ -5,6 +5,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework import status
 from django.shortcuts import get_object_or_404
+from rest_framework.decorators import api_view, permission_classes
 
 
 class CartView(APIView):
@@ -45,3 +46,12 @@ class CartView(APIView):
         cart_obj.delete()
 
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+@api_view(["DELETE"])
+@permission_classes([IsAuthenticated])
+def delete_all_cart_products(request):
+    account = request.user
+    cart_product = Cart.objects.filter(account=account)
+    cart_product.delete()
+    return Response(status=status.HTTP_204_NO_CONTENT)

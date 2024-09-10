@@ -41,3 +41,6 @@ class Order(models.Model):
     payment_mode = models.CharField(max_length=20, default="COD")
     created_at = models.DateTimeField(auto_now_add=True)
     items = models.ManyToManyField(OrderItem)
+
+    def __str__(self) -> str:
+        return self.account.email

@@ -9,6 +9,7 @@ from rest_framework.response import Response
 from django.shortcuts import get_object_or_404, get_list_or_404
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
+from order.models import Order
 
 
 class ProductPagination(PageNumberPagination):
@@ -81,7 +82,13 @@ class ProductViewSet(viewsets.ModelViewSet):
             product = get_object_or_404(models.Product, pk=pk)
             data = request.data
             account = request.user
-            print("account ", account)
+
+            is_ordered = Order.objects.filter(
+                account=account, items__product=pk).exists()
+
+            if not is_ordered:
+                return Response(status=status.HTTP_401_UNAUTHORIZED)
+
             review_data = {
                 'name': data.get('name'),
                 'email': data.get('email'),

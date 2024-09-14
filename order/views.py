@@ -7,6 +7,62 @@ from rest_framework.response import Response
 from django.shortcuts import get_object_or_404
 from product.models import Product
 from rest_framework import status
+import json
+import stripe
+import environ
+env = environ.Env()
+environ.Env.read_env()
+
+
+stripe.api_key = env("STRIPE_SECRET_KEY")
+
+
+def get_current_host(request):
+    protocol = request.is_secure() and "https" or "http"
+    host = request.get_host()
+    return f"{protocol}://{host}/"
+
+
+class OrderWithCard(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request):
+        YOUR_DOMAIN = get_current_host(request)
+        account = request.user
+        data = request.data
+        data['account'] = account.email
+
+        items = data['items']
+        total_money = 0
+        for item in items:
+            pd = get_object_or_404(Product, pk=item['product'])
+            total_money += (pd.price*item['quantity'])
+
+        data['items'] = json.dumps(items)
+
+        checkout_order_items = [{
+            'price_data': {
+                'currency': 'USD',
+                'product_data': {
+                    'name': "Total price of the t-shirts after discount",
+                    'metadata': data
+                },
+                'unit_amount': int(total_money * 100)
+            },
+            'quantity': 1,
+        }]
+
+        session = stripe.checkout.Session.create(
+            payment_method_types=['card'],
+            line_items=checkout_order_items,
+            customer_email=account.email,
+            mode='payment',
+            success_url=f"{YOUR_DOMAIN}",
+            cancel_url=f"{YOUR_DOMAIN}",
+            metadata=data
+        )
+
+        return Response({'session_url': session.url})
 
 
 class DeliveryAddressViewSet(viewsets.ModelViewSet):

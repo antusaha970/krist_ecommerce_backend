@@ -8,6 +8,7 @@ from django.shortcuts import get_object_or_404
 from product.models import Product
 from rest_framework import status
 from account.models import Account
+from django.shortcuts import render
 from rest_framework.decorators import api_view
 from django.views.decorators.csrf import csrf_exempt
 import json
@@ -60,7 +61,7 @@ class OrderWithCard(APIView):
             line_items=checkout_order_items,
             customer_email=account.email,
             mode='payment',
-            success_url=f"{YOUR_DOMAIN}?success=true",
+            success_url=f"{YOUR_DOMAIN}/api/orders/successful-payment/",
             cancel_url=f"{YOUR_DOMAIN}?cancel=true",
             metadata=data
         )
@@ -72,7 +73,7 @@ class OrderWithCard(APIView):
 @api_view(["POST"])
 def stripe_webhook(request):
     """This is stripe webhook which will be called when a successful payment happens and create a book property object in database"""
-    STRIPE_WEBHOOK_KEY = 'whsec_aba574de3de1ef67f7fca4837b2f513fe369e6c49063c08e8c2e42474aa3cea2'
+    STRIPE_WEBHOOK_KEY = 'whsec_yhnZ7yQGTBKaVRobGDQ33P8AjN5PQTof'
     payload = request.body
     sig_header = request.META['HTTP_STRIPE_SIGNATURE']
     event = None
@@ -176,3 +177,8 @@ class OrderView(APIView):
         orders = Order.objects.filter(account=account)
         serializer = OrderDisplaySerializer(orders, many=True)
         return Response(serializer.data)
+
+
+@api_view(['GET'])
+def successful_payment(request):
+    return render(request, 'successfulPayment.html')

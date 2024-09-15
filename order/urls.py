@@ -12,4 +12,5 @@ urlpatterns = [
     path("orders/", views.OrderView.as_view()),
     path("orders/card/", views.OrderWithCard.as_view()),
     path("orders/web-hook/", views.stripe_webhook),
+    path("orders/successful-payment/", views.successful_payment),
 ]

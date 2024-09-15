@@ -11,4 +11,5 @@ urlpatterns = [
     path('', include(router.urls)),
     path("orders/", views.OrderView.as_view()),
     path("orders/card/", views.OrderWithCard.as_view()),
+    path("orders/web-hook/", views.stripe_webhook),
 ]

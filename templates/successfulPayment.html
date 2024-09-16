@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<title>Bootstrap Simple Success Confirmation Popup</title>
+<title>Successful payment notification</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto|Varela+Round">
 <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
 <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
@@ -109,10 +109,16 @@ body {
 				<p class="text-center">Your payment has been done and order has been placed. You close the tab and return to the krist ecommerce tab. </p>
 			</div>
 			<div class="modal-footer">
-				<button class="btn btn-success btn-block" data-dismiss="modal">OK</button>
+				<button class="btn btn-success btn-block" id="close_button" >Close</button>
 			</div>
 		</div>
 	</div>
+
 </div>     
+<script>
+	document.getElementById("close_button").addEventListener("click", function() {
+		window.close();
+	});
+</script>
 </body>
 </html>

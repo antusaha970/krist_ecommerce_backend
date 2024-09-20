@@ -63,3 +63,24 @@ Read API documentation from here made with POSTMAN
 **Stripe:** Payment gateway for processing payments.
 
 
+## Docker Setup
+
+Ensure that you have Docker and Docker Compose installed on your machine.
+
+## Building the Docker Image
+
+```bash
+  docker compose build
+```
+
+This command will build the Docker image based on the Dockerfile and configurations in docker-compose.yml.
+
+## Running the Application
+
+```bash
+  docker compose up
+```
+
+This command will build (if not already built) and start the containers as defined in the docker-compose.yml file. The application should be accessible at http://localhost:9000.
+
+

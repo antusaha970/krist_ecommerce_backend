@@ -12,7 +12,16 @@ class ProductFilter(filter.FilterSet):
         field_name="colors__name", lookup_expr="iexact")
     sizes = filter.CharFilter(
         field_name="sizes__name", lookup_expr="iexact")
+    ordering = filter.OrderingFilter(
+        fields=(
+            ('created_on', 'created_on'),
+        ),
+        field_labels={
+            'created_on': 'Created On',
+        },
+        label="Order by"
+    )
 
     class Meta:
         model = Product
-        fields = ("rating",)
+        fields = ("rating", "created_on")

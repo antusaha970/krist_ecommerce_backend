@@ -1,5 +1,5 @@
 from rest_framework import viewsets
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated, IsAdminUser
 from .models import DeliveryAddress, OrderItem, Order
 from .serializers import DeliveryAddressSerializer, OrderSerializer, OrderDisplaySerializer
 from rest_framework.views import APIView
@@ -11,6 +11,7 @@ from account.models import Account
 from django.shortcuts import render
 from rest_framework.decorators import api_view
 from django.views.decorators.csrf import csrf_exempt
+from rest_framework.pagination import PageNumberPagination
 import json
 import stripe
 import environ
@@ -182,3 +183,12 @@ class OrderView(APIView):
 @api_view(['GET'])
 def successful_payment(request):
     return render(request, 'successfulPayment.html')
+
+
+class AdminOrderView(APIView):
+    permission_classes = [IsAdminUser]
+
+    def get(self, request):
+        orders = Order.objects.all()
+        serializer = OrderDisplaySerializer(orders, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)

@@ -22,7 +22,7 @@ class AccountSerializer(serializers.ModelSerializer):
     class Meta:
         model = Account
         fields = ['id', 'first_name', 'last_name',
-                  'phone_number', 'address', 'email', 'password', 'profile_picture']
+                  'phone_number', 'address', 'email', 'password', 'profile_picture', "is_superuser"]
         extra_kwargs = {
             "email": {"required": True},
             "first_name": {"required": True},
@@ -30,6 +30,7 @@ class AccountSerializer(serializers.ModelSerializer):
             "phone_number": {"required": True},
             "address": {"required": True},
             "password": {"required": True},
+            "is_superuser": {"required": False},
         }
 
     def create(self, validated_data):

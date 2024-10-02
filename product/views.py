@@ -10,6 +10,12 @@ from django.shortcuts import get_object_or_404, get_list_or_404
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from order.models import Order
+from django.conf import settings
+from django.core.cache.backends.base import DEFAULT_TIMEOUT
+from django.views.decorators.cache import cache_page
+from django.core.cache import cache
+
+CACHE_TTL = getattr(settings, 'CACHE_TTL', DEFAULT_TIMEOUT)
 
 
 class ProductPagination(PageNumberPagination):
@@ -54,20 +60,38 @@ class ProductViewSet(viewsets.ModelViewSet):
 
     @action(detail=False, methods=["GET"])
     def all_categories(self, request):
-        categories = models.Category.objects.all()
+        if cache.get("categories"):
+            categories = cache.get("categories")
+            print("Getting categories from cache")
+        else:
+            categories = models.Category.objects.all()
+            cache.set("categories", categories, timeout=60*5)
+            print("Getting categories from database")
         serializer = serializers.CategorySerializer(categories, many=True)
         return Response(serializer.data)
 
     @action(detail=False, methods=["GET"])
     def all_sizes(self, request):
-        categories = models.Size.objects.all()
-        serializer = serializers.SizeSerializer(categories, many=True)
+        if cache.get("sizes"):
+            sizes = cache.get("sizes")
+            print("getting sizes from cache")
+        else:
+            sizes = models.Size.objects.all()
+            cache.set("sizes", sizes, timeout=60*5)
+            print("getting sizes from database")
+        serializer = serializers.SizeSerializer(sizes, many=True)
         return Response(serializer.data)
 
     @action(detail=False, methods=["GET"])
     def all_colors(self, request):
-        categories = models.Color.objects.all()
-        serializer = serializers.ColorSerializer(categories, many=True)
+        if cache.get("colors"):
+            colors = cache.get("colors")
+            print("Getting colors from cache")
+        else:
+            colors = models.Color.objects.all()
+            cache.set("colors", colors, timeout=60*5)
+            print("Getting colors from database")
+        serializer = serializers.ColorSerializer(colors, many=True)
         return Response(serializer.data)
 
     @action(detail=True, methods=["GET", "POST"])

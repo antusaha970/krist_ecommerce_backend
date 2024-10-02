@@ -60,37 +60,28 @@ class ProductViewSet(viewsets.ModelViewSet):
 
     @action(detail=False, methods=["GET"])
     def all_categories(self, request):
-        if cache.get("categories"):
-            categories = cache.get("categories")
-            print("Getting categories from cache")
-        else:
+        categories = cache.get("categories")
+        if categories is None:
             categories = models.Category.objects.all()
             cache.set("categories", categories, timeout=60*5)
-            print("Getting categories from database")
         serializer = serializers.CategorySerializer(categories, many=True)
         return Response(serializer.data)
 
     @action(detail=False, methods=["GET"])
     def all_sizes(self, request):
-        if cache.get("sizes"):
-            sizes = cache.get("sizes")
-            print("getting sizes from cache")
-        else:
+        sizes = cache.get("sizes")
+        if sizes is None:
             sizes = models.Size.objects.all()
             cache.set("sizes", sizes, timeout=60*5)
-            print("getting sizes from database")
         serializer = serializers.SizeSerializer(sizes, many=True)
         return Response(serializer.data)
 
     @action(detail=False, methods=["GET"])
     def all_colors(self, request):
-        if cache.get("colors"):
-            colors = cache.get("colors")
-            print("Getting colors from cache")
-        else:
+        colors = cache.get("colors")
+        if colors is None:
             colors = models.Color.objects.all()
             cache.set("colors", colors, timeout=60*5)
-            print("Getting colors from database")
         serializer = serializers.ColorSerializer(colors, many=True)
         return Response(serializer.data)
 
@@ -137,6 +128,9 @@ class ProductViewSet(viewsets.ModelViewSet):
 
 @api_view(["GET"])
 def top_reviews(request):
-    reviews = models.Review.objects.all()[0:10]
+    reviews = cache.get("reviews")
+    if reviews is None:
+        reviews = models.Review.objects.all()[0:10]
+        cache.set("reviews", reviews, timeout=60*5)
     serializer = serializers.ReviewSerializer(reviews, many=True)
     return Response(serializer.data)

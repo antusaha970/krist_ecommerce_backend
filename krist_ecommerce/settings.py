@@ -21,7 +21,7 @@ DEBUG = True
 ALLOWED_HOSTS = ["*"]
 
 CSRF_TRUSTED_ORIGINS = [
-    'https://krist-ecommerce-backend.onrender.com'
+    'https://krist-ecommerce.netlify.app'
 ]
 # Application definition
 

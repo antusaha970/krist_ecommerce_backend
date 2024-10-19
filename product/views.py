@@ -132,5 +132,6 @@ def top_reviews(request):
     if reviews is None:
         reviews = models.Review.objects.all()[0:10]
         cache.set("reviews", reviews, timeout=60*5)
+
     serializer = serializers.ReviewSerializer(reviews, many=True)
     return Response(serializer.data)

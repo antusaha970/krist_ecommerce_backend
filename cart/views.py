@@ -23,7 +23,7 @@ class CartView(APIView):
             is_already_exist = Cart.objects.filter(
                 product=product, account=account).exists()
             if is_already_exist:
-                return Response({'statusCode': status.HTTP_304_NOT_MODIFIED})
+                return Response({'statusCode': status.HTTP_304_NOT_MODIFIED, 'message': "Already added"})
 
             serializer.save()
             return Response(status=status.HTTP_201_CREATED)

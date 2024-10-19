@@ -185,4 +185,5 @@ CORS_ORIGIN_ALLOW_ALL = False
 CORS_ORIGIN_WHITELIST = (
     'http://localhost:5173',
     'https://krist-ecommerce.netlify.app',
+    'https://krist-ecommerce-backend.vercel.app',
 )

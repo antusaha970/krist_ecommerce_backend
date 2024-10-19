@@ -180,10 +180,10 @@ EMAIL_HOST_USER = env("EMAIL_HOST_USER")
 EMAIL_HOST_PASSWORD = env("EMAIL_HOST_PASSWORD")
 
 # CORS origin
-# CORS_ORIGIN_ALLOW_ALL = True
-CORS_ORIGIN_ALLOW_ALL = False
-CORS_ORIGIN_WHITELIST = (
-    'http://localhost:5173',
-    'https://krist-ecommerce.netlify.app',
-    'https://krist-ecommerce-backend.vercel.app',
-)
+CORS_ORIGIN_ALLOW_ALL = True
+# CORS_ORIGIN_ALLOW_ALL = False
+# CORS_ORIGIN_WHITELIST = (
+#     'http://localhost:5173',
+#     'https://krist-ecommerce.netlify.app',
+#     'https://krist-ecommerce-backend.vercel.app',
+# )

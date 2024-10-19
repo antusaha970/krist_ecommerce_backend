@@ -85,8 +85,8 @@ class ProductReviews(models.Model):
     reviews = models.ForeignKey(Review, on_delete=models.CASCADE)
 
 
-@receiver(post_delete, sender=ProductImage)
-def auto_delete_image_after_product_delete(sender, instance, **kwargs):
-    """This method deletes product images automatically after"""
-    if instance.images:
-        instance.images.delete(save=False)
+# @receiver(post_delete, sender=ProductImage)
+# def auto_delete_image_after_product_delete(sender, instance, **kwargs):
+#     """This method deletes product images automatically after"""
+#     if instance.images:
+#         instance.images.delete(save=False)

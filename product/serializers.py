@@ -6,7 +6,7 @@ from django.contrib.auth import get_user_model
 class CategorySerializer(serializers.ModelSerializer):
     class Meta:
         model = models.Category
-        fields = ['name']
+        fields = ['name', 'thumbnail']
 
 
 class ReviewerSerializer(serializers.ModelSerializer):

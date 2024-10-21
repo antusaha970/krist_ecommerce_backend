@@ -10,6 +10,7 @@ from django.db.models.signals import post_delete
 class Category(models.Model):
     name = models.CharField(max_length=250, unique=True)
     slug = models.SlugField(default=None, null=True, blank=True)
+    thumbnail = models.TextField(default="")
 
     def save(self, *args, **kwargs):
         if not self.slug:

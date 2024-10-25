@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'wishlist',
     'cart',
     'order',
+    'admin_dashboard',
 ]
 
 

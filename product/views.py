@@ -125,6 +125,14 @@ class ProductViewSet(viewsets.ModelViewSet):
                 return Response(status=status.HTTP_201_CREATED)
             return Response(review_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+    @action(detail=False, methods=['POST'])
+    def add_category(self, request):
+        serializer = serializers.CategorySerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response({'details': "New category added"}, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
 
 @api_view(["GET"])
 def top_reviews(request):

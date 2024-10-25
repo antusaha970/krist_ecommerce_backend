@@ -133,6 +133,22 @@ class ProductViewSet(viewsets.ModelViewSet):
             return Response({'details': "New category added"}, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+    @action(detail=False, methods=['POST'])
+    def add_size(self, request):
+        serializer = serializers.SizeSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response({'details': "New size added"}, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    @action(detail=False, methods=['POST'])
+    def add_color(self, request):
+        serializer = serializers.ColorSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response({'details': "New color added"}, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
 
 @api_view(["GET"])
 def top_reviews(request):

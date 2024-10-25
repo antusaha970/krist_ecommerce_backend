@@ -10,6 +10,7 @@ from django.db.models.signals import post_delete
 class Category(models.Model):
     name = models.CharField(max_length=250, unique=True)
     slug = models.SlugField(default=None, null=True, blank=True)
+    thumbnail = models.TextField(default="")
 
     def save(self, *args, **kwargs):
         if not self.slug:
@@ -76,7 +77,7 @@ class Product(models.Model):
 class ProductImage(models.Model):
     product = models.ForeignKey(
         Product, on_delete=models.CASCADE, related_name="product_images")
-    images = models.ImageField(upload_to="product/images")
+    images = models.TextField(default="")
 
 
 class ProductReviews(models.Model):
@@ -85,8 +86,8 @@ class ProductReviews(models.Model):
     reviews = models.ForeignKey(Review, on_delete=models.CASCADE)
 
 
-@receiver(post_delete, sender=ProductImage)
-def auto_delete_image_after_product_delete(sender, instance, **kwargs):
-    """This method deletes product images automatically after"""
-    if instance.images:
-        instance.images.delete(save=False)
+# @receiver(post_delete, sender=ProductImage)
+# def auto_delete_image_after_product_delete(sender, instance, **kwargs):
+#     """This method deletes product images automatically after"""
+#     if instance.images:
+#         instance.images.delete(save=False)

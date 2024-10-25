@@ -32,7 +32,7 @@ class WishListView(APIView):
                 account=user, products=products).exists()
 
             if is_already_exits_same_product:
-                return Response(status=status.HTTP_304_NOT_MODIFIED)
+                return Response({'statusCode': status.HTTP_304_NOT_MODIFIED, 'message': "Already added"})
 
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)

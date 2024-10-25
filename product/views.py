@@ -125,6 +125,30 @@ class ProductViewSet(viewsets.ModelViewSet):
                 return Response(status=status.HTTP_201_CREATED)
             return Response(review_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+    @action(detail=False, methods=['POST'])
+    def add_category(self, request):
+        serializer = serializers.CategorySerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response({'details': "New category added"}, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    @action(detail=False, methods=['POST'])
+    def add_size(self, request):
+        serializer = serializers.SizeSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response({'details': "New size added"}, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    @action(detail=False, methods=['POST'])
+    def add_color(self, request):
+        serializer = serializers.ColorSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response({'details': "New color added"}, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
 
 @api_view(["GET"])
 def top_reviews(request):
@@ -132,5 +156,6 @@ def top_reviews(request):
     if reviews is None:
         reviews = models.Review.objects.all()[0:10]
         cache.set("reviews", reviews, timeout=60*5)
+
     serializer = serializers.ReviewSerializer(reviews, many=True)
     return Response(serializer.data)

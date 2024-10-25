@@ -11,6 +11,7 @@ djangorestframework-simplejwt==5.3.1
 idna==3.9
 Markdown==3.6
 pillow==10.4.0
+psycopg2-binary==2.9.10
 PyJWT==2.8.0
 redis==5.1.0
 requests==2.32.3
@@ -19,3 +20,4 @@ stripe==10.11.0
 typing_extensions==4.12.2
 tzdata==2024.1
 urllib3==2.2.3
+whitenoise==6.7.0

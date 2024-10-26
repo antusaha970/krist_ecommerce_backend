@@ -1,9 +1,25 @@
+from .serializers import ClientMessageSerializer
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from order.models import Order
 from account.models import Account
 from product.models import Product
 from product.serializers import ProductSerializer
+from rest_framework import viewsets, permissions
+from .models import ClientMessage
+
+
+class ClientMessageViewSet(viewsets.ModelViewSet):
+    queryset = ClientMessage.objects.all()
+    serializer_class = ClientMessageSerializer
+
+    def get_permissions(self):
+        if self.request.method == 'GET':
+            return [permissions.IsAuthenticated()]
+        elif self.request.method == 'POST':
+            return [permissions.AllowAny()]
+        else:
+            return [permissions.IsAuthenticated()]
 
 
 @api_view(['GET'])

@@ -100,8 +100,8 @@ CACHE_TTL = 60*5
 CACHES = {
     "default": {
         "BACKEND": "django_redis.cache.RedisCache",
-        # "LOCATION": "rediss://red-cruli55umphs73epmhe0:YrXjEZg0tMDP60YjV29cdYbVttB4d77o@oregon-redis.render.com:6379",
-        "LOCATION": "redis://127.0.0.1:6379/1",
+        "LOCATION": "rediss://red-cruli55umphs73epmhe0:YrXjEZg0tMDP60YjV29cdYbVttB4d77o@oregon-redis.render.com:6379",
+        # "LOCATION": "redis://127.0.0.1:6379/1",
         "OPTIONS": {
             "CLIENT_CLASS": "django_redis.client.DefaultClient",
         },

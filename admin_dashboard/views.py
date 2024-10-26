@@ -7,6 +7,11 @@ from product.models import Product
 from product.serializers import ProductSerializer
 from rest_framework import viewsets, permissions
 from .models import ClientMessage
+from django.conf import settings
+from django.core.cache.backends.base import DEFAULT_TIMEOUT
+from django.core.cache import cache
+
+CACHE_TTL = getattr(settings, 'CACHE_TTL', DEFAULT_TIMEOUT)
 
 
 class ClientMessageViewSet(viewsets.ModelViewSet):
@@ -33,6 +38,9 @@ def admin_overview(request):
 
 @api_view(['GET'])
 def admin_latest_products(request):
-    recent_products = Product.objects.order_by("-created_on")[:5]
+    recent_products = cache.get("recent_products")
+    if recent_products is None:
+        recent_products = Product.objects.order_by("-created_on")[:5]
+        cache.set("recent_products", recent_products, timeout=60*3)
     serializer = ProductSerializer(recent_products, many=True)
     return Response(serializer.data)

@@ -42,16 +42,14 @@ class ProductViewSet(viewsets.ModelViewSet):
     def upload_product_image(self, request, pk=None):
         product = get_object_or_404(models.Product, pk=pk)
 
-        images = request.FILES.getlist('images')
-        serialized_data = []
+        images = request.data.get("images")
+        formatted_data = []
 
-        for image in images:
-            data = {'product': product.id, 'images': image}
-            serialized_data.append(data)
+        for img in images:
+            formatted_data.append({'images': img, 'product': product.id})
 
         serializer = serializers.ProductImageSerializer(
-            data=serialized_data, many=True)
-
+            data=formatted_data, many=True)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)

@@ -53,17 +53,10 @@ class ProductReviewsSerializer(serializers.ModelSerializer):
 class ProductImageSerializer(serializers.ModelSerializer):
     class Meta:
         model = models.ProductImage
-        fields = ['images']
+        fields = "__all__"
 
 
-class ProductImageToDisplay(serializers.Serializer):
-    # images = serializers.SerializerMethodField()
-
-    # def get_images(self, obj):
-    #     request = self.context.get('request')
-    #     if request is not None:
-    #         return request.build_absolute_uri(obj.images.url)
-    #     return obj.images.url  # fallback if request context is missing
+class ProductImageToDisplay(serializers.ModelSerializer):
 
     class Meta:
         model = models.ProductImage
@@ -71,7 +64,7 @@ class ProductImageToDisplay(serializers.Serializer):
 
 
 class ProductSerializer(serializers.ModelSerializer):
-    product_images = ProductImageSerializer(many=True, read_only=True)
+    product_images = ProductImageToDisplay(many=True, read_only=True)
 
     categories = serializers.SlugRelatedField(
         queryset=models.Category.objects.all(), slug_field='name', many=True)

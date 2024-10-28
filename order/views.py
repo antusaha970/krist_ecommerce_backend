@@ -63,7 +63,7 @@ class OrderWithCard(APIView):
             customer_email=account.email,
             mode='payment',
             success_url=f"{YOUR_DOMAIN}/api/orders/successful-payment/",
-            cancel_url=f"{YOUR_DOMAIN}?cancel=true",
+            cancel_url=f"{YOUR_DOMAIN}/api/orders/cancel-payment/",
             metadata=data
         )
 
@@ -83,10 +83,8 @@ def stripe_webhook(request):
         event = stripe.Webhook.construct_event(
             payload, sig_header, STRIPE_WEBHOOK_KEY)
     except ValueError as e:
-        print('Value error ', e)
         return Response({'errors': "Invalid Payload"}, status=status.HTTP_400_BAD_REQUEST)
     except stripe.error.SignatureVerificationError as e:
-        print("Invalid signature ", e)
         return Response({'errors': "Invalid Signature"}, status=status.HTTP_400_BAD_REQUEST)
 
     if event['type'] == 'checkout.session.completed':
@@ -97,9 +95,6 @@ def stripe_webhook(request):
         account_email = data.pop('account', None)
         account = Account.objects.get(email=account_email)
         data['items'] = items
-        print(items)
-        print(data)
-        print(account)
 
         order_items = []
         for pd in items:
@@ -183,6 +178,11 @@ class OrderView(APIView):
 @api_view(['GET'])
 def successful_payment(request):
     return render(request, 'successfulPayment.html')
+
+
+@api_view(['GET'])
+def cancel_payment(request):
+    return render(request, 'cancelPayment.html')
 
 
 class AdminOrderView(APIView):

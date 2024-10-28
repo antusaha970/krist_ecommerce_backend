@@ -79,6 +79,9 @@ class ProductImage(models.Model):
         Product, on_delete=models.CASCADE, related_name="product_images")
     images = models.TextField(default="")
 
+    def __str__(self) -> str:
+        return f"Product id: {self.product.id}"
+
 
 class ProductReviews(models.Model):
     product = models.ForeignKey(
